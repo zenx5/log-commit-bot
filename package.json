@@ -12,7 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.4.5",
-    "grammy": "^1.11.2"
+    "grammy": "^1.11.2",
+    "mongoose": "^8.5.2"
   },
   "devDependencies": {
     "@types/node": "^20.14.12",

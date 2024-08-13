@@ -1,31 +1,24 @@
 import dotenv from 'dotenv'
+dotenv.config()
 import { Bot } from "grammy";
 import { getCurrent, getLastCommits, info, setRepository, setToken } from './commands';
+import access from './database/middleware';
 
-dotenv.config()
-
-//Store bot
-let token = ""
-let repository = {
-  user: "",
-  repo: "",
-  commit: ""
-}
 
 
 //Create a new bot
 const bot = new Bot(process.env.NODE_BOT_TOKEN as string);
 
 // command handlers
-bot.command("info", info)
+bot.command("info", access(info) )
 
-bot.command("commit", getLastCommits(token, repository));
+bot.command("commit", access(getLastCommits) );
 
-bot.command("token", setToken( newToken => token=newToken ));
+bot.command("token", access(setToken) );
 
-bot.command("set", setRepository(repository, (key, value) => repository[key] = value ));
+bot.command("set", access(setRepository) );
 
-bot.command("current", getCurrent(repository));
+bot.command("current", access(getCurrent));
 
 //Start the Bot
 bot.start();
