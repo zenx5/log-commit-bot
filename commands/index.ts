@@ -8,7 +8,9 @@ export const info = async (ctx:CommandContext<Context>) => {
 
 export const getLastCommits = (token:string, repository:{ user:string, repo:string}) => async (ctx:CommandContext<Context>) => {
     try{
-        const [user, repo, length] = ctx.message?.text.split(" ").slice(1) as string[]
+        const args = ctx.message?.text.split(" ").slice(1) as string[]
+        const length = args.pop()
+        const [user, repo] = args
         let url = "https://api.github.com/repos/{user}/{repo}/commits";
         url = ( !user || !repo )? url.replace("{user}", repository.user).replace("{repo}", repository.repo) : url.replace("{user}", user).replace("{repo}", repo);
         const headers = new Headers()
@@ -17,12 +19,15 @@ export const getLastCommits = (token:string, repository:{ user:string, repo:stri
         if( token.length > 5 ){
             headers.set("Authorization", `Bearer ${token}`)
         }
-        const response = await fetch( url, { headers } )
+        const response = await fetch( url, {
+            headers
+        } )
         if( response.status !== 200 ) return await ctx.reply(response.statusText)
         const commits = await response.json() as { commit:{ author:{ name:string } , message:string }, sha:string  }[]
         if( commits.length === 0 ) return await ctx.reply("No commits found")
         let message = `<b>Last Commits in ${user ? user : repository.user}/${repo ? repo : repository.repo}:</b>\n`
-        for( const {commit, sha} of commits.slice(0,length ? Number(length) : 3) ){
+        const listSize = length ? Number(length) : 3
+        for( const {commit, sha} of commits.slice(0, listSize) ){
             message += ` \n<b>Commit ${sha}:</b>\n(by ${commit.author.name})`
             message += ` \n\t<i>${commit.message}</i>\n\n`
         }

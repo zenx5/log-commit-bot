@@ -1,5 +1,5 @@
 import dotenv from 'dotenv'
-import { Bot, InlineKeyboard } from "grammy";
+import { Bot } from "grammy";
 import { getCurrent, getLastCommits, info, setRepository, setToken } from './commands';
 
 dotenv.config()
@@ -7,8 +7,8 @@ dotenv.config()
 //Store bot
 let token = ""
 let repository = {
-  user: "zenx5",
-  repo: "foda-2",
+  user: "",
+  repo: "",
   commit: ""
 }
 
